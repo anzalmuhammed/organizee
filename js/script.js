@@ -172,5 +172,5 @@ themeCheckbox.checked = localStorage.getItem("theme") === "dark"
 document.body.classList.toggle("dark-mode", themeCheckbox.checked)
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js")
+  navigator.serviceWorker.register("/organizee/sw.js")
 }
