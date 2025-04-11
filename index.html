@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizee - Stay on Track and Achieve Your Goals</title>
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <header class="page-header">
+        <h1 class="title"><img src="assets/images/logo.png" alt="O" class="logo">rganizee</h1>
+        <label class="theme-switch">
+            <input type="checkbox" class="theme-checkbox">
+            <span class="slider round">
+                <span><img class="icon moon" src="assets/images/moon.png" alt="Moon"></span>
+                <span><img class="icon sun" src="assets/images/sun.png" alt="Sun"></span>
+            </span>
+        </label>
+    </header>
+    <div class="container">
+        <h1>To Do List</h1>
+        <section class="section">
+            <h2 class="subtitle">Things to be done</h2>
+            <ul class="task-list" id="taskList"></ul>
+            <div class="add-task-container">
+                <div class="input-container">
+                    <input type="text" class="input" id="newTaskInput" placeholder="Type new task...">
+                    <img src="assets/images/plus.svg" alt="Add Icon" class="add-icon" id="addIcon">
+                </div>
+                <button class="button" id="addTaskButton">Add New</button>
+            </div>
+        </section>
+        <section class="section">
+            <h2 class="subtitle">Completed</h2>
+            <ul class="task-list" id="completedTaskList">
+            </ul>
+        </section>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
