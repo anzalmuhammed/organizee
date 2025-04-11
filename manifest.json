@@ -4,7 +4,7 @@
   "description": "Stay on Track and Achieve Your Goals",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#06c792",
+  "background_color": "#050241",
   "theme_color": "#050241",
   "icons": [
     {
