@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadTasksFromCache() {
     try {
-      const response = await fetch("/api/tasks")
+      const response = await fetch("/organizee/api/tasks")
       const data = await response.json()
       tasks = data.tasks || []
       completedTasks = data.completedTasks || []
