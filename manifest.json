@@ -2,7 +2,7 @@
   "name": "Organizee - To Do List",
   "short_name": "Organizee",
   "description": "Stay on Track and Achieve Your Goals",
-  "start_url": "/",
+  "start_url": "/organizee/",
   "display": "standalone",
   "background_color": "#050241",
   "theme_color": "#050241",
