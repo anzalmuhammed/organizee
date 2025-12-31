@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadTasksFromCache() {
     try {
-      const response = await fetch("/api/tasks")
+      const response = await fetch("/organizee/api/tasks")
       const data = await response.json()
       tasks = data.tasks || []
       completedTasks = data.completedTasks || []
@@ -817,5 +817,5 @@ themeCheckbox.checked = localStorage.getItem("theme") === "dark"
 document.body.classList.toggle("dark-mode", themeCheckbox.checked)
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js")
+  navigator.serviceWorker.register("/organizee/sw.js")
 }

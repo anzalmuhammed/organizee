@@ -7,23 +7,20 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
       return cache.addAll([
-        "/",
-        "/index.html",
-        "/manifest.json",
-        "/js/script.js",
-        "/css/style.css",
-        "/assets/images/logo.png",
-        "/assets/images/moon.png",
-        "/assets/images/sun.png",
-        "/assets/images/rearrange.svg",
-        "/assets/images/rename.svg",
-        "/assets/images/done.svg",
-        "/assets/images/delete.svg",
-        "/assets/images/plus.svg",
-        "/assets/images/tick-green.svg",
-        "/assets/images/revert.svg",
-        "/fonts/baloopaaji2-regular-webfont.woff",
-        "/fonts/baloopaaji2-regular-webfont.woff2",
+        "/organizee/",
+        "/organizee/index.html",
+        "/organizee/manifest.json",
+        "/organizee/js/script.js",
+        "/organizee/css/style.css",
+        "/organizee/assets/images/logo.png",
+        "/organizee/assets/images/moon.png",
+        "/organizee/assets/images/sun.png",
+        "/organizee/assets/images/delete.svg",
+        "/organizee/assets/images/plus.svg",
+        "/organizee/assets/images/tick-green.svg",
+        "/organizee/assets/images/revert.svg",
+        "/organizee/fonts/baloopaaji2-regular-webfont.woff",
+        "/organizee/fonts/baloopaaji2-regular-webfont.woff2",
       ])
     })
   )
