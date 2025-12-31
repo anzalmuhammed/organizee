@@ -134,6 +134,7 @@ body {
   margin-bottom: 10px;
   font-size: 26px;
   padding-left: 10px;
+  margin-left: 20px;
 }
 
 .task-list {
@@ -153,6 +154,11 @@ body {
   cursor: pointer;
 }
 
+.drag-icon {
+  filter: invert(57%) sepia(0%) saturate(43%) hue-rotate(246deg) brightness(93%)
+    contrast(95%);
+}
+
 .checkbox {
   margin-right: 10px;
   border-radius: 50%;
@@ -164,6 +170,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: -10px;
 }
 
 .checkbox:checked {
@@ -176,6 +183,7 @@ body {
 
 .checkbox:disabled {
   border-color: #06c792;
+  margin-left: 30px;
 }
 
 .task-text {
@@ -203,16 +211,17 @@ body {
   flex: 1;
   border-radius: 4px 0 0 4px;
   padding: 18px 0 18px 35px;
-  width: 100%;
+  width: 95.3%;
   outline: none;
   border: 1px solid #c6c6c6;
   border-right: none;
   font-size: 16px;
+  margin-left: 20px;
 }
 
 .add-icon {
   position: absolute;
-  left: 10px;
+  left: 30px;
   top: 50%;
   transform: translateY(-50%);
   width: 18px;
@@ -306,6 +315,8 @@ body.dark-mode .task-text.completed {
   color: #06c792;
 }
 
+body.dark-mode .rename-button,
+body.dark-mode .done,
 body.dark-mode .revert {
   filter: invert(100%) brightness(2);
 }
@@ -333,4 +344,77 @@ body.dark-mode .revert {
   .title {
     font-size: 36px;
   }
+}
+
+@media all and (max-width: 576px) {
+  .input {
+    border-right: 1px solid #c6c6c6;
+  }
+  .button {
+    width: 30%;
+  }
+}
+
+@media all and (max-width: 400px) {
+  .input {
+    width: 92%;
+  }
+  .button {
+    width: 25%;
+  }
+}
+
+.task-item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.done-button,
+.rename-button {
+  margin-right: 20px;
+}
+
+.rename-input {
+  flex: 1;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #c6c6c6;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+}
+
+body.dark-mode .rename-input {
+  background-color: #333;
+  color: #eee;
+  border-color: #555;
+}
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.drag-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.drag-icon:hover {
+  filter: invert(17%) sepia(3%) saturate(29%) hue-rotate(343deg) brightness(97%)
+    contrast(95%);
+}
+
+.task-item.dragging {
+  opacity: 0.5;
+}
+
+.task-item.dragging .drag-icon {
+  filter: invert(33%) sepia(66%) saturate(6705%) hue-rotate(196deg)
+    brightness(98%) contrast(102%);
 }

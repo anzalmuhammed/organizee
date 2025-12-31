@@ -1,5 +1,5 @@
-const STATIC_CACHE = "static-v1"
-const DYNAMIC_CACHE = "dynamic-v1"
+const STATIC_CACHE = "static-v2"
+const DYNAMIC_CACHE = "dynamic-v2"
 const TASKS_CACHE = "tasks-data"
 
 self.addEventListener("install", function (event) {
@@ -15,6 +15,9 @@ self.addEventListener("install", function (event) {
         "/assets/images/logo.png",
         "/assets/images/moon.png",
         "/assets/images/sun.png",
+        "/assets/images/rearrange.svg",
+        "/assets/images/rename.svg",
+        "/assets/images/done.svg",
         "/assets/images/delete.svg",
         "/assets/images/plus.svg",
         "/assets/images/tick-green.svg",
