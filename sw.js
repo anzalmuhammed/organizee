@@ -17,8 +17,11 @@ self.addEventListener("install", function (event) {
         "/organizee/assets/images/sun.png",
         "/organizee/assets/images/delete.svg",
         "/organizee/assets/images/plus.svg",
-        "/organizee/assets/images/tick-green.svg",
         "/organizee/assets/images/revert.svg",
+        "/organizee/assets/images/rearrange.svg",
+        "/organizee/assets/images/rename.svg",
+        "/organizee/assets/images/done.svg",
+        "/organizee/assets/images/cancel.svg",
         "/organizee/fonts/baloopaaji2-regular-webfont.woff",
         "/organizee/fonts/baloopaaji2-regular-webfont.woff2",
       ])
@@ -34,7 +37,7 @@ self.addEventListener("activate", function (event) {
         return Promise.all(
           keyList
             .map((key) => {
-              if (key.startsWith("static-") && key !== STATIC_CACHE) {
+              if ((key.startsWith("static-") || key.startsWith("dynamic-")) && key !== STATIC_CACHE && key !== DYNAMIC_CACHE) {
                 return caches.delete(key)
               }
               return null
@@ -55,6 +58,7 @@ self.addEventListener("fetch", function (event) {
     )
     return
   }
+
   if (event.request.url.includes("/api/tasks")) {
     event.respondWith(handleTasksRequest(event))
     return

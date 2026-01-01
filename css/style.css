@@ -10,8 +10,8 @@ ol {
 
 @font-face {
   font-family: "baloo_paaji_2regular";
-  src: url("/organizee/fonts/baloopaaji2-regular-webfont.woff2") format("woff2"),
-    url("/organizee/fonts/baloopaaji2-regular-webfont.woff") format("woff");
+  src: url("../fonts/baloopaaji2-regular-webfont.woff2") format("woff2"),
+    url("../fonts/baloopaaji2-regular-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -316,7 +316,6 @@ body.dark-mode .task-text.completed {
 }
 
 body.dark-mode .rename-button,
-body.dark-mode .done,
 body.dark-mode .revert {
   filter: invert(100%) brightness(2);
 }
