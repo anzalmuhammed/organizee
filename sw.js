@@ -22,6 +22,8 @@ self.addEventListener("install", function (event) {
         "/organizee/assets/images/rename.svg",
         "/organizee/assets/images/done.svg",
         "/organizee/assets/images/cancel.svg",
+        "/organizee/assets/images/tick-green.svg",
+        "/organizee/assets/images/revert.svg",
         "/organizee/fonts/baloopaaji2-regular-webfont.woff",
         "/organizee/fonts/baloopaaji2-regular-webfont.woff2",
       ])
