@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizee - Stay on Track and Achieve Your Goals</title>
+    <title>Organizee - Stay on Track</title>
     <link rel="icon" href="assets/images/logo.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
@@ -15,12 +15,13 @@
         <h1 class="title"><img src="assets/images/logo.png" alt="O" class="logo">rganizee</h1>
         <label class="theme-switch">
             <input type="checkbox" class="theme-checkbox">
-            <span class="slider round">
-                <span><img class="icon moon" src="assets/images/moon.png" alt="Moon"></span>
-                <span><img class="icon sun" src="assets/images/sun.png" alt="Sun"></span>
+            <span class="slider">
+                <img class="icon moon" src="assets/images/moon.png" alt="Moon">
+                <img class="icon sun" src="assets/images/sun.png" alt="Sun">
             </span>
         </label>
     </header>
+
     <div class="container">
         <h1>To Do List</h1>
         <div class="wrapper">
@@ -36,11 +37,77 @@
                     <button class="button" id="addTaskButton">Add New</button>
                 </div>
             </section>
+
             <section class="section">
                 <h2 class="subtitle">Completed</h2>
-                <ul class="task-list" id="completedTaskList">
-                </ul>
+                <ul class="task-list" id="completedTaskList"></ul>
             </section>
+        </div>
+    </div>
+
+    <audio id="alarmSound" src="assets/audios/alarm.mp3" preload="auto"></audio>
+
+    <div id="taskSettingsModal" class="modal">
+        <div class="modal-content">
+            <h3>Task Settings</h3>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Task Name</b></label>
+                    <input type="text" id="editTaskName" class="modal-input">
+                </div>
+
+                <div class="alarm-toggle-card">
+                    <div class="alarm-toggle-row">
+                        <span><b>Enable Alarm & Notifications</b></span>
+                        <label class="switch">
+                            <input type="checkbox" id="alarmEnabledToggle">
+                            <span class="slider-toggle round"></span>
+                        </label>
+                    </div>
+
+                    <div id="alarmSettingsFields" class="disabled-opacity">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><b>Date</b></label>
+                                <input type="date" id="editTaskDate" class="modal-input">
+                            </div>
+                            <div class="form-group">
+                                <label><b>Time <span style="color:red">*</span></b></label>
+                                <input type="time" id="editTaskTime" class="modal-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><b>Alert Mode</b></label>
+                            <select id="editAlertMode" class="modal-input">
+                                <option value="ring">Ring (Sound)</option>
+                                <option value="vibrate">Vibrate Only</option>
+                            </select>
+                        </div>
+
+                        <div class="repeat-section">
+                            <label class="repeat-label"><b>Repeat Schedule</b></label>
+                            <div class="everyday-row">
+                                <span>Everyday</span>
+                                <input type="checkbox" id="repeatEveryday">
+                            </div>
+                            <div class="days-grid">
+                                <label><input type="checkbox" class="day-checkbox" value="1"> M</label>
+                                <label><input type="checkbox" class="day-checkbox" value="2"> T</label>
+                                <label><input type="checkbox" class="day-checkbox" value="3"> W</label>
+                                <label><input type="checkbox" class="day-checkbox" value="4"> T</label>
+                                <label><input type="checkbox" class="day-checkbox" value="5"> F</label>
+                                <label><input type="checkbox" class="day-checkbox" value="6"> S</label>
+                                <label><input type="checkbox" class="day-checkbox" value="0"> S</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeModal" class="cancel">Cancel</button>
+                <button id="saveTaskSettings" class="save">Save Changes</button>
+            </div>
         </div>
     </div>
 

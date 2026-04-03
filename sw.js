@@ -1,105 +1,61 @@
-const STATIC_CACHE = "static-v3"
-const DYNAMIC_CACHE = "dynamic-v3"
-const TASKS_CACHE = "tasks-data"
+const CACHE_NAME = "organizee-v3";
+const ASSETS = [
+  "/organizee/",
+  "/organizee/index.html",
+  "/organizee/js/script.js",
+  "/organizee/css/style.css",
+  "/organizee/manifest.json",
+  "/organizee/assets/images/logo.png",
+  "/organizee/assets/images/moon.png",
+  "/organizee/assets/images/sun.png",
+  "/organizee/assets/images/more.svg",
+  "/organizee/assets/images/delete.svg",
+  "/organizee/assets/images/plus.svg",
+  "/organizee/assets/images/revert.svg",
+  "/organizee/assets/images/alarm.svg",
+  "/organizee/assets/audios/alarm.mp3"
+];
 
-self.addEventListener("install", function (event) {
-  self.skipWaiting()
-  event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => {
-      return cache.addAll([
-        "/organizee/",
-        "/organizee/index.html",
-        "/organizee/manifest.json",
-        "/organizee/js/script.js",
-        "/organizee/css/style.css",
-        "/organizee/assets/images/logo.png",
-        "/organizee/assets/images/moon.png",
-        "/organizee/assets/images/sun.png",
-        "/organizee/assets/images/delete.svg",
-        "/organizee/assets/images/plus.svg",
-        "/organizee/assets/images/revert.svg",
-        "/organizee/assets/images/rearrange.svg",
-        "/organizee/assets/images/rename.svg",
-        "/organizee/assets/images/done.svg",
-        "/organizee/assets/images/cancel.svg",
-        "/organizee/fonts/baloopaaji2-regular-webfont.woff",
-        "/organizee/fonts/baloopaaji2-regular-webfont.woff2",
-      ])
-    })
-  )
-})
+// Install Event
+self.addEventListener("install", (e) => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
+});
 
-self.addEventListener("activate", function (event) {
-  event.waitUntil(
-    caches
-      .keys()
-      .then((keyList) => {
-        return Promise.all(
-          keyList
-            .map((key) => {
-              if ((key.startsWith("static-") || key.startsWith("dynamic-")) && key !== STATIC_CACHE && key !== DYNAMIC_CACHE) {
-                return caches.delete(key)
-              }
-              return null
-            })
-            .filter(Boolean)
-        )
-      })
-      .then(() => self.clients.claim())
-  )
-})
-
-self.addEventListener("fetch", function (event) {
-  if (event.request.url.match(/\.(woff|woff2)$/)) {
-    event.respondWith(
-      caches.match(event.request).then(function (response) {
-        return response || fetch(event.request)
-      })
-    )
-    return
-  }
-
-  if (event.request.url.includes("/api/tasks")) {
-    event.respondWith(handleTasksRequest(event))
-    return
-  }
-
-  event.respondWith(
-    caches.match(event.request, { ignoreSearch: true }).then((response) => {
-      if (response) {
-        return response
-      }
-      return fetch(event.request).then((res) => {
-        return caches.open(DYNAMIC_CACHE).then((cache) => {
-          cache.put(event.request.url, res.clone())
-          return res
+// Activate Event
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
-      })
+      );
     })
-  )
-})
+  );
+});
 
-async function handleTasksRequest(event) {
-  const cache = await caches.open(TASKS_CACHE)
+// Fetch Event
+self.addEventListener("fetch", (e) => {
+  // Skip cross-origin requests (like Google Fonts or Analytics) if you have any
+  if (!e.request.url.startsWith(self.location.origin)) return;
 
-  if (event.request.method === "GET") {
-    const response = await cache.match("tasks")
-    return (
-      response ||
-      new Response(JSON.stringify({ tasks: [], completedTasks: [] }), {
-        headers: { "Content-Type": "application/json" },
-      })
-    )
-  }
+  e.respondWith(
+    caches.match(e.request).then((cachedResponse) => {
+      if (cachedResponse) return cachedResponse;
 
-  if (event.request.method === "POST") {
-    const data = await event.request.json()
-    const response = new Response(JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" },
+      return fetch(e.request).then((networkResponse) => {
+        // Optional: Cache new files on the fly
+        if (networkResponse.status === 200) {
+          const cacheCopy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, cacheCopy));
+        }
+        return networkResponse;
+      }).catch(() => {
+        // If both fail, you could return a custom offline page here
+      });
     })
-    await cache.put("tasks", response.clone())
-    return response
-  }
-
-  return new Response(null, { status: 405 })
-}
+  );
+});

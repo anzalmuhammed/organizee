@@ -2,15 +2,17 @@
   box-sizing: border-box;
   font-family: "baloo_paaji_2regular";
 }
-
 ul,
 ol {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 @font-face {
   font-family: "baloo_paaji_2regular";
-  src: url("../fonts/baloopaaji2-regular-webfont.woff2") format("woff2"),
+  src:
+    url("../fonts/baloopaaji2-regular-webfont.woff2") format("woff2"),
     url("../fonts/baloopaaji2-regular-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
@@ -18,17 +20,20 @@ ol {
 
 body {
   margin: 0;
-  border: 0;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 3s ease,
+    color 3s ease;
+  background-color: #fff;
+  color: #050241;
 }
 
+/* --- THEME SWITCH (3s Animation) --- */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 25px;
 }
-
 .title {
   margin: 0;
   display: flex;
@@ -36,11 +41,8 @@ body {
   font-size: 50px;
   color: #050241;
 }
-
 .logo {
-  width: auto;
   height: 40px;
-  margin-bottom: 4px;
   margin-right: -2px;
 }
 
@@ -50,13 +52,11 @@ body {
   width: 60px;
   height: 30px;
 }
-
 .theme-checkbox {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -65,80 +65,60 @@ body {
   right: 0;
   bottom: 0;
   background-color: #000;
-  transition: all 3s cubic-bezier(0.23, 1, 0.32, 1);
   border-radius: 34px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: 3s;
 }
-
 .theme-checkbox:checked + .slider {
   background-color: #777777;
 }
-
-.theme-checkbox:checked + .slider:before {
-  transform: translateX(30px);
-}
-
 .icon {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
-  transition: opacity 0.3s;
+  width: 20px;
+  height: 20px;
+  transition:
+    opacity 0.4s,
+    transform 3s;
 }
-
 .moon {
   left: 8px;
-  width: 20px;
-  transform: translateY(-50%) rotate(0deg);
-  transition: opacity 0.4s, transform 3s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 1;
 }
-
 .sun {
   right: 8px;
-  width: 20px;
   opacity: 0;
   transform: translateY(-50%) rotate(-360deg);
-  transition: opacity 0.4s, transform 3s cubic-bezier(0.23, 1, 0.32, 1);
 }
-
 .theme-checkbox:checked + .slider .moon {
   opacity: 0;
   transform: translateY(-50%) rotate(360deg);
 }
-
 .theme-checkbox:checked + .slider .sun {
   opacity: 1;
   transform: translateY(-50%) rotate(0deg);
 }
 
+/* --- TASK LIST UI --- */
 .container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 25px 0 50px;
 }
-
 .container h1 {
-  margin: 0 auto;
   text-align: center;
   font-size: 34px;
   color: #050241;
 }
-
 .section {
   max-width: 600px;
   margin: 0 auto;
 }
-
 .subtitle {
   color: #050241;
-  margin-bottom: 10px;
   font-size: 26px;
-  padding-left: 10px;
   margin-left: 20px;
-}
-
-.task-list {
-  padding: 0 15px;
+  margin-bottom: 10px;
 }
 
 .task-item {
@@ -146,17 +126,39 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  padding: 0 15px;
 }
-
 .left-container {
   display: flex;
   align-items: center;
+  flex: 1;
   cursor: pointer;
 }
+.task-text {
+  font-size: 20px;
+  color: #050241;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.task-text.completed {
+  color: #06c792;
+  text-decoration: line-through;
+}
 
-.drag-icon {
-  filter: invert(57%) sepia(0%) saturate(43%) hue-rotate(246deg) brightness(93%)
-    contrast(95%);
+.drag-handle {
+  display: grid;
+  grid-template-columns: repeat(2, 5px);
+  gap: 3px;
+  width: 20px;
+  margin-right: 10px;
+  cursor: grab;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: #050241;
+  border-radius: 50%;
 }
 
 .checkbox {
@@ -167,12 +169,7 @@ body {
   appearance: none;
   border: 2px solid #050241;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: -10px;
 }
-
 .checkbox:checked {
   background-image: url(../assets/images/tick-green.svg);
   background-size: 15px;
@@ -181,239 +178,304 @@ body {
   border-color: transparent;
 }
 
-.checkbox:disabled {
-  border-color: #06c792;
-  margin-left: 30px;
+.task-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+.action-icon {
+  width: 22px;
+  height: 22px;
+}
+.task-alarm-icon {
+  width: 18px;
+  height: 18px;
 }
 
-.task-text {
-  font-size: 20px;
-  color: #050241;
-  flex: 1;
-}
-
-.task-text.completed {
-  color: #06c792;
-}
-
+/* --- INPUTS --- */
 .add-task-container {
   display: flex;
   margin-top: 20px;
   padding: 0 15px;
 }
-
 .input-container {
   position: relative;
-  width: 84%;
+  width: 80%;
 }
-
 .input {
-  flex: 1;
+  width: 100%;
   border-radius: 4px 0 0 4px;
-  padding: 18px 0 18px 35px;
-  width: 95.3%;
+  padding: 18px 40px;
   outline: none;
   border: 1px solid #c6c6c6;
-  border-right: none;
   font-size: 16px;
-  margin-left: 20px;
+  background-color: #f9f9f9;
 }
-
 .add-icon {
   position: absolute;
-  left: 30px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   width: 18px;
-  height: 18px;
 }
-
 .button {
-  padding: 0 20px;
-  background-color: #050241;
+  width: 20%;
+  background: #050241;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
   cursor: pointer;
-  width: 20%;
   font-size: 16px;
 }
 
-.button:hover {
-  background-color: #555555;
-}
-
-.action-button {
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  display: flex;
+/* --- MODAL (TASK SETTINGS) --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  color: #050241;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 20px 0;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group label b {
+  font-size: 16px;
+  display: block;
+}
+.modal-input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fff;
+  color: #050241;
+  outline: none;
 }
 
-.readd-button {
-  margin-right: 20px;
+.alarm-toggle-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 15px;
+  background: #fafafa;
+}
+.alarm-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.action-icon {
-  width: 20px;
-  height: 20px;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider-toggle:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider-toggle {
+  background-color: #06c792;
+}
+input:checked + .slider-toggle:before {
+  transform: translateX(20px);
 }
 
-.empty-list-message {
-  color: #888;
-  font-style: italic;
-  text-align: center;
-  padding: 10px 0;
+.disabled-opacity {
+  opacity: 0.3;
+  pointer-events: none;
+  filter: grayscale(1);
 }
 
+.days-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 10px;
+}
+.days-grid label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  padding: 10px 4px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  flex: 1;
+  background: #fff;
+  cursor: pointer;
+}
+/* Selected Day Logic */
+.days-grid input:checked + span,
+.days-grid label:has(input:checked) {
+  background: #050241;
+  color: white;
+  border-color: #050241;
+}
+.days-grid input {
+  display: none;
+}
+
+/* --- MODAL BUTTONS (NO HOVER) --- */
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.cancel {
+  background-color: transparent !important;
+  color: #050241 !important;
+  padding: 12px 24px;
+  border: 2px solid #050241 !important;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: none !important;
+}
+.save {
+  background-color: #050241 !important;
+  color: white !important;
+  padding: 12px 24px;
+  border: none !important;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  flex: 1;
+  transition: none !important;
+}
+
+/* --- DARK MODE --- */
 body.dark-mode {
   background-color: #000;
   color: #eee;
 }
-
-body.dark-mode .container {
-  border-color: #444;
-}
-
-body.dark-mode .container h1,
 body.dark-mode .title,
-body.dark-mode .subtitle {
-  color: #eee;
-}
-
+body.dark-mode .subtitle,
+body.dark-mode .container h1,
 body.dark-mode .task-text {
   color: #eee;
 }
-
+body.dark-mode .dot {
+  background-color: #eee;
+}
 body.dark-mode .checkbox {
   border-color: #eee;
 }
-
-body.dark-mode .checkbox:disabled {
-  border-color: #06c792;
-}
-
 body.dark-mode .input {
+  background-color: #1a1a1a;
+  color: #eee;
+  border-color: #444;
+}
+body.dark-mode .modal-content {
+  background-color: #1a1a1a;
+  color: #eee;
+}
+body.dark-mode .modal-input {
   background-color: #333;
   color: #eee;
-  border-color: #555;
+  border-color: #444;
+}
+body.dark-mode .alarm-toggle-card {
+  background: #222;
+  border-color: #333;
 }
 
-body.dark-mode .button {
-  border: 1px solid #555;
-  border-left: none;
-}
-
-body.dark-mode .empty-list-message {
-  color: #aaa;
-}
-
-body.dark-mode .task-text.completed {
-  color: #06c792;
-}
-
-body.dark-mode .rename-button,
-body.dark-mode .revert {
-  filter: invert(100%) brightness(2);
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@media all and (max-width: 640px) {
-  .page-header {
-    padding: 25px 10px 25px 10px;
-  }
-  .logo {
-    width: 30px;
-    height: 30px;
-  }
-  .title {
-    font-size: 36px;
-  }
-}
-
-@media all and (max-width: 576px) {
-  .input {
-    border-right: 1px solid #c6c6c6;
-  }
-  .button {
-    width: 30%;
-  }
-}
-
-@media all and (max-width: 400px) {
-  .input {
-    width: 92%;
-  }
-  .button {
-    width: 25%;
-  }
-}
-
-.task-item-actions {
-  display: flex;
-  align-items: center;
-}
-
-.done-button,
-.rename-button {
-  margin-right: 20px;
-}
-
-.rename-input {
-  flex: 1;
-  padding: 8px;
-  margin-right: 10px;
-  border: 1px solid #c6c6c6;
-  border-radius: 4px;
-  font-size: 16px;
-  outline: none;
-}
-
-body.dark-mode .rename-input {
-  background-color: #333;
+/* Dark Mode Weekday Selected Fix */
+body.dark-mode .days-grid label {
+  border-color: #444;
+  background: #222;
   color: #eee;
-  border-color: #555;
+}
+body.dark-mode .days-grid label:has(input:checked) {
+  background: #eee !important;
+  color: #000 !important;
+  border-color: #eee !important;
 }
 
-.drag-handle {
-  cursor: grab;
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  user-select: none;
+/* Dark Mode Buttons */
+body.dark-mode .cancel {
+  color: #fff !important;
+  border-color: #fff !important;
+}
+body.dark-mode .save {
+  background-color: #eee !important;
+  color: #000 !important;
 }
 
-.drag-icon {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  margin-right: 10px;
+/* ICON FILTERS (Excluding Logo and Alarm) */
+body.dark-mode .modal-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+body.dark-mode .add-icon {
+  filter: invert(1);
 }
 
-.drag-icon:hover {
-  filter: invert(17%) sepia(3%) saturate(29%) hue-rotate(343deg) brightness(97%)
-    contrast(95%);
+/* Specifically invert 'More' icon but NOT 'Delete' or 'Alarm' */
+body.dark-mode .action-icon:not(.delete-icon) {
+  filter: invert(1);
 }
 
-.task-item.dragging {
-  opacity: 0.5;
+/* Revert Icon specifically set to White */
+body.dark-mode .rev-btn .action-icon {
+  filter: brightness(0) invert(1) !important;
 }
 
-.task-item.dragging .drag-icon {
-  filter: invert(33%) sepia(66%) saturate(6705%) hue-rotate(196deg)
-    brightness(98%) contrast(102%);
+/* Ensure logo and alarm icons stay original */
+body.dark-mode .logo,
+body.dark-mode .task-alarm-icon {
+  filter: none !important;
 }
