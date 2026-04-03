@@ -16,7 +16,7 @@ const ASSETS = [
   "/organizee/assets/audios/alarm.mp3"
 ];
 
-// Install Event
+// Install: Cache all files
 self.addEventListener("install", (e) => {
   self.skipWaiting();
   e.waitUntil(
@@ -24,7 +24,7 @@ self.addEventListener("install", (e) => {
   );
 });
 
-// Activate Event
+// Activate: Cleanup old caches
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -37,25 +37,20 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-// Fetch Event
+// Fetch: Offline support
 self.addEventListener("fetch", (e) => {
-  // Skip cross-origin requests (like Google Fonts or Analytics) if you have any
   if (!e.request.url.startsWith(self.location.origin)) return;
-
   e.respondWith(
     caches.match(e.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-
-      return fetch(e.request).then((networkResponse) => {
-        // Optional: Cache new files on the fly
-        if (networkResponse.status === 200) {
-          const cacheCopy = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, cacheCopy));
-        }
-        return networkResponse;
-      }).catch(() => {
-        // If both fail, you could return a custom offline page here
-      });
+      return cachedResponse || fetch(e.request);
     })
+  );
+});
+
+// Handle Notification Clicks
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('/organizee/')
   );
 });

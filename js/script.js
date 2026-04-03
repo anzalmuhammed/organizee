@@ -27,6 +27,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   initApp();
 
+  // --- WAKE UP LOGIC ---
+  // If the tablet screen turns back on or user returns to tab, check alarms immediately
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      console.log("App resumed: Checking for missed alarms...");
+      triggerAlarmsNow();
+      scheduleNextAlarm();
+    }
+  });
+
   // --- UI Interactions ---
   newTaskInput.addEventListener("input", (e) => {
     addIcon.style.display = e.target.value ? "none" : "block";
@@ -53,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
     scheduleNextAlarm();
   }
 
-  // --- Offline Storage Logic (Replacing API) ---
   function loadTasksFromLocalStorage() {
     const savedData = localStorage.getItem("organizee_tasks");
     if (savedData) {
@@ -68,8 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function saveTasksToLocalStorage() {
-    const data = JSON.stringify({ tasks, completedTasks });
-    localStorage.setItem("organizee_tasks", data);
+    localStorage.setItem("organizee_tasks", JSON.stringify({ tasks, completedTasks }));
   }
 
   function addTask() {
@@ -85,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
       alertMode: "ring",
       repeatEveryday: false,
       repeatDays: [],
-      notified: false,
       oneTimeDone: false
     });
     newTaskInput.value = "";
@@ -94,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
     renderTasks();
   }
 
-  // --- Modal Logic ---
   function openTaskSettings(id) {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
@@ -122,16 +128,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (alarmEnabledToggle.checked) {
       if (!editTaskTime.value) {
-        alert("Please set a time for the alarm.");
+        alert("Please set a time.");
         return;
       }
-      // Check Notification permissions
       if ("Notification" in window && Notification.permission !== "granted") {
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
-          alert("Notification permission is required for alarms.");
-          return;
-        }
+        await Notification.requestPermission();
       }
     }
 
@@ -157,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   closeModal.addEventListener("click", () => modal.style.display = "none");
 
-  // --- Alarm System (Battery Saver Logic) ---
+  // --- ALARM ENGINE ---
   function scheduleNextAlarm() {
     if (activeAlarmTimeout) clearTimeout(activeAlarmTimeout);
 
@@ -172,28 +173,17 @@ document.addEventListener("DOMContentLoaded", function () {
       targetDate.setHours(hours, minutes, 0, 0);
 
       if (task.reminderDate) {
-        const [year, month, day] = task.reminderDate.split('-').map(Number);
-        targetDate.setFullYear(year, month - 1, day);
+        const [y, m, d] = task.reminderDate.split('-').map(Number);
+        targetDate.setFullYear(y, m - 1, d);
       }
 
-      if (targetDate <= now) {
-        if (!task.reminderDate) targetDate.setDate(targetDate.getDate() + 1);
-        else return;
+      // If time passed, move to tomorrow (for repeating)
+      if (targetDate <= now && !task.reminderDate) {
+        targetDate.setDate(targetDate.getDate() + 1);
       }
 
-      if (!task.repeatEveryday && task.repeatDays && task.repeatDays.length > 0) {
-        const curDay = now.getDay().toString();
-        if (!task.repeatDays.includes(curDay) || targetDate <= now) {
-          let daysUntil = 1;
-          while (!task.repeatDays.includes(((now.getDay() + daysUntil) % 7).toString()) && daysUntil < 8) {
-            daysUntil++;
-          }
-          targetDate.setDate(now.getDate() + daysUntil);
-        }
-      }
-
-      if (!nextTriggerTime || targetDate < nextTriggerTime) {
-        nextTriggerTime = targetDate;
+      if (targetDate > now) {
+        if (!nextTriggerTime || targetDate < nextTriggerTime) nextTriggerTime = targetDate;
       }
     });
 
@@ -213,58 +203,61 @@ document.addEventListener("DOMContentLoaded", function () {
     const curDay = now.getDay().toString();
 
     tasks.forEach(task => {
-      if (!task.alarmEnabled || task.reminderTime !== curTime || task.oneTimeDone) return;
+      if (!task.alarmEnabled || task.oneTimeDone) return;
 
-      let trigger = false;
-      if (!task.reminderDate && (!task.repeatDays.length || task.repeatEveryday || task.repeatDays.includes(curDay))) trigger = true;
-      else if (task.reminderDate === curDate) trigger = true;
+      let isTime = task.reminderTime === curTime;
+      // Also trigger if we "just missed" it while the tablet was asleep (within 5 mins)
+      if (!isTime && task.reminderTime < curTime) {
+        const [th, tm] = task.reminderTime.split(':').map(Number);
+        const taskDate = new Date();
+        taskDate.setHours(th, tm, 0, 0);
+        const diff = (now - taskDate) / 1000 / 60;
+        if (diff > 0 && diff < 10) isTime = true; // Trigger if missed by less than 10 mins
+      }
 
-      if (trigger) {
-        if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("Organizee", { body: task.text, icon: "assets/images/logo.png" });
+      if (isTime) {
+        let trigger = false;
+        if (!task.reminderDate && (!task.repeatDays.length || task.repeatEveryday || task.repeatDays.includes(curDay))) trigger = true;
+        else if (task.reminderDate === curDate) trigger = true;
+
+        if (trigger) {
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("Organizee", { body: task.text, icon: "assets/images/logo.png" });
+          }
+          if (task.alertMode === "vibrate" && "vibrate" in navigator) navigator.vibrate([500, 200, 500]);
+          else alarmSound.play().catch(() => { });
+
+          if (task.reminderDate || (!task.repeatEveryday && !task.repeatDays.length)) task.oneTimeDone = true;
+
+          saveTasksToLocalStorage();
+          renderTasks();
         }
-
-        if (task.alertMode === "vibrate" && "vibrate" in navigator) {
-          navigator.vibrate([500, 200, 500]);
-        } else {
-          alarmSound.play().catch(() => { });
-        }
-
-        if (task.reminderDate || (!task.repeatEveryday && !task.repeatDays.length)) {
-          task.oneTimeDone = true;
-        }
-        saveTasksToLocalStorage();
-        renderTasks();
       }
     });
   }
 
-  // --- Rendering & Drag-Drop ---
   function renderTasks() {
     taskList.innerHTML = "";
-    if (tasks.length === 0) {
-      taskList.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">No tasks to do!</p>';
-    }
+    if (tasks.length === 0) taskList.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">No tasks!</p>';
 
     tasks.forEach((task, index) => {
       const li = document.createElement("li");
       li.className = "task-item";
       li.id = `task-item-${task.id}`;
       li.draggable = true;
-      const alarmIcon = (task.alarmEnabled && !task.oneTimeDone) ? `<img src="assets/images/alarm.svg" class="task-alarm-icon">` : '';
+      const icon = (task.alarmEnabled && !task.oneTimeDone) ? `<img src="assets/images/alarm.svg" class="task-alarm-icon">` : '';
 
       li.innerHTML = `
         <div class="left-container">
           <div class="drag-handle"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
           <input type="checkbox" class="checkbox">
-          <span class="task-text">${index + 1}. ${task.text} ${alarmIcon}</span>
+          <span class="task-text">${index + 1}. ${task.text} ${icon}</span>
         </div>
         <div class="task-item-actions">
           <button class="action-button more-btn"><img src="assets/images/more.svg" class="action-icon"></button>
           <button class="action-button del-btn"><img src="assets/images/delete.svg" class="action-icon delete-icon"></button>
         </div>`;
 
-      // Drag Events
       li.addEventListener("dragstart", function () { this.classList.add("dragging"); draggedItem = this; });
       li.addEventListener("dragend", function () {
         this.classList.remove("dragging");
@@ -274,7 +267,6 @@ document.addEventListener("DOMContentLoaded", function () {
         renderTasks();
       });
 
-      // Task Actions
       li.querySelector(".checkbox").addEventListener("change", () => {
         const t = tasks.splice(tasks.indexOf(task), 1)[0];
         t.completed = true;
@@ -336,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// --- Theme Persistent Logic ---
+// Theme & SW Registration
 const themeToggle = document.querySelector(".theme-checkbox");
 themeToggle.addEventListener("change", function () {
   document.body.classList.toggle("dark-mode", this.checked);
@@ -347,11 +339,8 @@ if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark-mode");
 }
 
-// Register Service Worker for Offline Support
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/organizee/sw.js')
-      .then(reg => console.log('Service Worker registered!'))
-      .catch(err => console.error('Registration failed:', err));
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/organizee/sw.js").catch(() => { });
   });
 }
